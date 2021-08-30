@@ -40,9 +40,24 @@ def importDataInfo(path):
     print('Removed Images:', len(removeindexList))
     data.drop(data.index[removeindexList], inplace=True)
     print('Remaining Images:', len(data))
-if display:
-    hist, _ = np.histogram(data['Steering'], (nBin))
-    plt.bar(center, hist, width=0.06)
-    plt.plot((np.min(data['Steering']), np.max(data['Steering'])), (samplesPerBin, samplesPerBin))
-    plt.show()
-data = balanceData(data,display=False)
+                          
+    if display:
+         hist, _ = np.histogram(data['Steering'], (nBin))
+         plt.bar(center, hist, width=0.06)
+         plt.plot((np.min(data['Steering']), np.max(data['Steering'])), (samplesPerBin, samplesPerBin))
+         plt.show()
+    return data
+                          
+def loadData(path, data):
+  imagesPath = []
+  steering = []
+  for i in range(len(data)):
+    indexed_data = data.iloc[i]
+    imagesPath.append(f'{path}/IMG/{indexed_data[0]}')
+    steering.append(float(indexed_data[3]))
+   imagesPath = np.asarray(imagesPath)
+   steering = np.asarray(steering)
+   return imagesPath, steering
+   imagesPath, steerings = loadData(path,data)
+
+
