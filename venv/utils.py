@@ -85,3 +85,30 @@ def augmentImage(imgPath,steering):
           img = cv2.flip(img, 1)
           steering = -steering
     return img, steering
+                          
+ 
+ def preProcess(img):
+    img = img[60:135,:,:]
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)
+    img = cv2.GaussianBlur(img,  (3, 3), 0)
+    img = cv2.resize(img, (200, 66))
+    img = img/255
+    return img
+
+                 
+def batchGen(imagesPath, steeringList, batchSize, trainFlag):
+    while True:
+        imgBatch = []
+        steeringBatch = []
+ 
+        for i in range(batchSize):
+             index = random.randint(0, len(imagesPath) - 1)
+             if trainFlag:
+                    img, steering = augmentImage(imagesPath[index], steeringList[index])
+             else:
+                    img = mpimg.imread(imagesPath[index])
+                    steering = steeringList[index]
+             img = preProcess(img)
+             imgBatch.append(img)
+             steeringBatch.append(steering)
+         yield (np.asarray(imgBatch),np.asarray(steeringBatch))
