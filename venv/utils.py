@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np 
 import os 
+import matplotlib.pyplot as plt
+from sklearn.utils import shuffle
+imprt matplotlib.images as mpimg
 
 def getName(filePath):
     return filePath.split('\')[-1]
@@ -58,6 +61,27 @@ def loadData(path, data):
    imagesPath = np.asarray(imagesPath)
    steering = np.asarray(steering)
    return imagesPath, steering
-   imagesPath, steerings = loadData(path,data)
+   
 
 
+
+def augmentImage(imgPath,steering):
+    img =  mpimg.imread(imgPath)
+    print(np.random.rand(),np.random.rand(),np.random.rand(),np.random.rand())
+    #PAN
+    if np.random.rand() < 0.5:
+          pan = iaa.Affine(translate_percent={"x": (-0.1, 0.1), "y": (-0.1, 0.1)})
+          img = pan.augment_image(img)
+    #ZOOM
+    if np.random.rand() < 0.5: 
+          zoom = iaa.Affine(scale=(1, 1.2))
+          img = zoom.augment_image(img)
+    #BRIGHTNESS
+    if np.random.rand() < 0.5:
+          brightness = iaa.Multiply((0.2, 1.2))
+          img = brightness.augment_image(img)
+    #FLIP
+    if np.random.rand() < 0.5:
+          img = cv2.flip(img, 1)
+          steering = -steering
+    return img, steering
